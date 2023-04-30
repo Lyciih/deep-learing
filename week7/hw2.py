@@ -11,8 +11,8 @@ import time
 torch.set_default_dtype(torch.float64)
 
 # csv檔的路徑
-data_path = "C:\\Users\\Lyciih\\Desktop\\test\\train.csv"
-test_path = "C:\\Users\\Lyciih\\Desktop\\test\\test.csv"
+data_path = "./train.csv"
+test_path = "./test.csv"
 
 
 # 使用 read_csv() 函數來讀檔
@@ -71,12 +71,12 @@ class Network(nn.Module):
         h2 = F.relu(self.linear2(h1))
         h3 = F.relu(self.linear3(h2))
         h4 = F.relu(self.linear4(h3))
-        y_pred = self.linear5(h4)
+        y_pred = F.relu(self.linear5(h4))
         return y_pred
 
 
 BATCH_SIZE = 10
-LEARN_RATE = 0.0001
+LEARN_RATE = 0.00001
 MOMENTUM = 0.9
 EPOCHS = 4000
 graph = [2, 20, 20, 20, 20, 1]
@@ -201,14 +201,14 @@ for epoch in range(1):
 
 
 # 儲存訓練報告
-plt.savefig('C:\\Users\\Lyciih\\Desktop\\test\\report\\{}.png'.format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
+plt.savefig('./report/{}.png'.format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
 
 
 # 產生測試資料結果的csv檔
 test_output = pd.DataFrame(test_out, range(1, len(test) + 1))
 test_output.columns.name = 'id'
 test_output.columns = ['y']
-test_output.to_csv('C:\\Users\\Lyciih\\Desktop\\test\\test\\{}.csv'
+test_output.to_csv('./test/{}.csv'
                    .format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)),
                    index_label="id"
                    )
@@ -217,7 +217,7 @@ test_output.to_csv('C:\\Users\\Lyciih\\Desktop\\test\\test\\{}.csv'
 # 儲存訓練結果
 torch.save(
     MyNetwork.state_dict(),
-    'C:\\Users\\Lyciih\\Desktop\\test\\parameter\\{}.pt'
+    './parameter/{}.pt'
     .format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
 
-plt.show()
+# plt.show()
