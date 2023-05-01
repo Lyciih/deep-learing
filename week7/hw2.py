@@ -58,20 +58,14 @@ class TestData(Dataset):
 
 
 class Network(nn.Module):
-    def __init__(self, in_dim, hid1, hid2, hid3, hid4, output):
+    def __init__(self, in_dim, hid1, output):
         super(Network, self).__init__()
         self.linear1 = nn.Linear(in_dim, hid1)
-        self.linear2 = nn.Linear(hid1, hid2)
-        self.linear3 = nn.Linear(hid2, hid3)
-        self.linear4 = nn.Linear(hid3, hid4)
-        self.linear5 = nn.Linear(hid4, output)
+        self.linear2 = nn.Linear(hid1, output)
 
     def forward(self, input_array):
         h1 = F.relu(self.linear1(input_array))
-        h2 = F.relu(self.linear2(h1))
-        h3 = F.relu(self.linear3(h2))
-        h4 = F.relu(self.linear4(h3))
-        y_pred = F.relu(self.linear5(h4))
+        y_pred = F.relu(self.linear2(h1))
         return y_pred
 
 
@@ -79,12 +73,12 @@ BATCH_SIZE = 10
 LEARN_RATE = 0.00002
 MOMENTUM = 0.9
 EPOCHS = 8000
-graph = [2, 40, 40, 40, 40, 1]
+graph = [2, 40, 1]
 
 
 train = MyData(source_data)
 loss_fn = nn.MSELoss()
-MyNetwork = Network(graph[0], graph[1], graph[2], graph[3], graph[4],  graph[5])
+MyNetwork = Network(graph[0], graph[1], graph[2])
 optimizer = torch.optim.SGD(MyNetwork.parameters(), lr=LEARN_RATE, momentum=MOMENTUM)
 train_loader = DataLoader(dataset=train, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -185,7 +179,7 @@ lo.plot(i_list, loss_list, 'y')
 
 
 test = TestData(test_data)
-test_loader = DataLoader(dataset=test, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = DataLoader(dataset=test, batch_size=BATCH_SIZE, shuffle=False)
 
 
 i = 0
@@ -201,14 +195,14 @@ for epoch in range(1):
 
 
 # 儲存訓練報告
-plt.savefig('./report/{}.png'.format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
+plt.savefig('./lab/report/{}.png'.format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
 
 
 # 產生測試資料結果的csv檔
 test_output = pd.DataFrame(test_out, range(1, len(test) + 1))
 test_output.columns.name = 'id'
 test_output.columns = ['y']
-test_output.to_csv('./test/{}.csv'
+test_output.to_csv('./lab/test/{}.csv'
                    .format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)),
                    index_label="id"
                    )
@@ -217,7 +211,7 @@ test_output.to_csv('./test/{}.csv'
 # 儲存訓練結果
 torch.save(
     MyNetwork.state_dict(),
-    './parameter/{}.pt'
+    './lab/parameter/{}.pt'
     .format(time.strftime("%Y-%m-%d %H_%M_%S", train_time_temp)))
 
 # plt.show()
