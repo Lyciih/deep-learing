@@ -76,10 +76,10 @@ class Network(nn.Module):
 
 
 BATCH_SIZE = 10
-LEARN_RATE = 0.00001
+LEARN_RATE = 0.00002
 MOMENTUM = 0.9
-EPOCHS = 4000
-graph = [2, 20, 20, 20, 20, 1]
+EPOCHS = 8000
+graph = [2, 40, 40, 40, 40, 1]
 
 
 train = MyData(source_data)
